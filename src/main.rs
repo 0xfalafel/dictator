@@ -1,4 +1,4 @@
-use global_hotkey::{GlobalHotKeyEvent,GlobalHotKeyManager, hotkey::{HotKey, Modifiers, Code}};
+use global_hotkey::{GlobalHotKeyEvent, GlobalHotKeyManager, HotKeyState, hotkey::{HotKey, Modifiers, Code}};
 use std::thread;
 use std::time::Duration;
 
@@ -15,8 +15,14 @@ fn main() {
     loop {
         
         if let Ok(event) = GlobalHotKeyEvent::receiver().try_recv() {
-            println!("{:?}", event);
+            // println!("{:?}", event.state);
+
+            match event.state {
+                HotKeyState::Pressed  => println!("Hi mom!"),
+                HotKeyState::Released => println!("Bye mom!"),
+            }
         }
+
 
         thread::sleep(Duration::from_millis(100));
     }
