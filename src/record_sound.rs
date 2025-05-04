@@ -15,13 +15,13 @@ pub async fn record_wav() -> Result<()> {
     let device = host.default_input_device()
         .ok_or(anyhow!("No input device"))?;
 
-    println!("Input device: {}", device.name().unwrap());
+    // println!("Input device: {}", device.name().unwrap());
 
     let config = device
         .default_input_config()
         .context("Failed to get default input config")?;
     
-    println!("Default input config: {:?}", config);
+    // println!("Default input config: {:?}", config);
 
     // The WAV file we're recording to.
     const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/recorded.wav");
@@ -30,7 +30,7 @@ pub async fn record_wav() -> Result<()> {
     let writer = Arc::new(Mutex::new(Some(writer)));
     
     // A flag to indicate that recording is in progress.
-    println!("Begin recording...");
+    println!("Listening ...");
 
     // Run the input stream on a separate thread.
     let writer_2 = writer.clone();
@@ -79,7 +79,6 @@ pub async fn record_wav() -> Result<()> {
     writer.lock().unwrap().take().unwrap().finalize()?;
     println!("Recording {} complete!", PATH);
     
-
     Ok(())
 }
 
