@@ -4,6 +4,8 @@ use std::thread;
 use tokio_util::sync::CancellationToken;
 use tokio::time::Duration;
 
+mod record_sound;
+use record_sound::record_wav;
 
 async fn demo(token: CancellationToken) {
     let mut count: u64 = 1;
