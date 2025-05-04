@@ -8,6 +8,8 @@ mod record_sound;
 use record_sound::record_wav;
 
 async fn demo(token: CancellationToken) {
+    let _ = record_wav().await;
+
     let mut count: u64 = 1;
     
     loop {
