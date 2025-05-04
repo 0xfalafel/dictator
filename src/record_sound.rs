@@ -4,24 +4,19 @@ use std::fs::File;
 use std::io::BufWriter;
 use std::sync::{Arc, Mutex};
 
-enum Error {
-    NoInputDevice,
-}
+use anyhow::{anyhow, Context, Result};
 
-pub async fn record_wav() -> Result<(), Error> {
+pub async fn record_wav() -> Result<()> {
     let host = cpal::default_host();
 
-    // Set up the input device and stream with the default input config.
-    let device = match host.default_input_device() {
-        Some(device) => device,
-        None => return Err(Error::NoInputDevice),
-    };
+    let device = host.default_input_device()
+        .ok_or(anyhow!("No input device"))?;
 
     println!("Input device: {}", device.name().unwrap());
 
     let config = device
         .default_input_config()
-        .expect("Failed to get default input config");
+        .context("Failed to get default input config")?;
     
     println!("Default input config: {:?}", config);
 
