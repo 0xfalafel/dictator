@@ -7,27 +7,6 @@ use tokio::time::Duration;
 mod record_sound;
 use record_sound::record_wav;
 
-async fn demo(token: CancellationToken) {
-    if let Err(err) = record_wav().await {
-        eprintln!("Failed to record the audio: {err}");
-        return;
-    }
-
-    let mut count: u64 = 1;
-    
-    loop {
-        if token.is_cancelled() {
-            return ;
-        }
-
-        thread::sleep(Duration::from_millis(1000));
-
-        println!("{}s", count);
-        count += 1;
-    }
-}
-
-
 #[tokio::main]
 async fn main() {
     // initialize the hotkeys manager
@@ -47,13 +26,14 @@ async fn main() {
 
             match event.state {
                 HotKeyState::Pressed  => {
-                    let _ = tokio::spawn(
-                        demo(token.clone())
-                    );
+                    if let Err(err) = record_wav(token.clone()).await {
+                        eprintln!("Failed to record the audio: {err}");
+                        break;
+                    }                    
                 },
                 HotKeyState::Released => {
                     token.cancel();
-                    println!("Bye mom!");
+                    println!("Stopped recording");
                     token = CancellationToken::new();
                 }
             }

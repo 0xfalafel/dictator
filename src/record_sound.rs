@@ -3,13 +3,15 @@ use cpal::{FromSample, Sample};
 use std::fs::File;
 use std::io::BufWriter;
 use std::sync::{Arc, Mutex};
+use tokio_util::sync::CancellationToken;
+
 
 use anyhow::{anyhow, Context, Result};
 
 // We are basically using the code
 // https://github.com/RustAudio/cpal/blob/master/examples/record_wav.rs
 
-pub async fn record_wav() -> Result<()> {
+pub async fn record_wav(token: CancellationToken) -> Result<()> {
     let host = cpal::default_host();
 
     let device = host.default_input_device()
@@ -73,8 +75,8 @@ pub async fn record_wav() -> Result<()> {
 
     stream.play()?;
 
-    // Let recording go for roughly three seconds.
-    std::thread::sleep(std::time::Duration::from_secs(3));
+    // Record until we receive a signal to stop
+    token.cancelled().await;
     drop(stream);
     writer.lock().unwrap().take().unwrap().finalize()?;
     println!("Recording {} complete!", PATH);
