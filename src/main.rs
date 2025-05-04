@@ -8,7 +8,10 @@ mod record_sound;
 use record_sound::record_wav;
 
 async fn demo(token: CancellationToken) {
-    let _ = record_wav().await;
+    if let Err(err) = record_wav().await {
+        eprintln!("Failed to record the audio: {err}");
+        return;
+    }
 
     let mut count: u64 = 1;
     
