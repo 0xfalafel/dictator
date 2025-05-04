@@ -6,6 +6,9 @@ use std::sync::{Arc, Mutex};
 
 use anyhow::{anyhow, Context, Result};
 
+// We are basically using the code
+// https://github.com/RustAudio/cpal/blob/master/examples/record_wav.rs
+
 pub async fn record_wav() -> Result<()> {
     let host = cpal::default_host();
 
