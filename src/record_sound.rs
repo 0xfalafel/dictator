@@ -31,9 +31,6 @@ pub async fn record_wav(token: CancellationToken) -> Result<()> {
     let writer = hound::WavWriter::create(PATH, spec)?;
     let writer = Arc::new(Mutex::new(Some(writer)));
     
-    // A flag to indicate that recording is in progress.
-    println!("Listening ...");
-
     // Run the input stream on a separate thread.
     let writer_2 = writer.clone();
 
@@ -72,6 +69,9 @@ pub async fn record_wav(token: CancellationToken) -> Result<()> {
             )))
         }
     };
+
+    // A flag to indicate that recording is in progress.
+    println!("Listening ...");
 
     stream.play()?;
 
