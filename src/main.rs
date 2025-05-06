@@ -7,6 +7,18 @@ use tokio::time::Duration;
 mod record_sound;
 use record_sound::record_wav;
 
+async fn record_and_transcribe(token: CancellationToken) { 
+    let res = record_wav(token).await;
+
+    if let Err(err) = res {
+        eprintln!("Failed to record microphone: {err}");
+        return;
+    }
+
+    
+}
+
+
 #[tokio::main]
 async fn main() {
     // initialize the hotkeys manager
@@ -28,7 +40,7 @@ async fn main() {
                 HotKeyState::Pressed  => {
                     let clone_token = token.clone();
                     let _handle = tokio::spawn(
-                        record_wav(clone_token)
+                        record_and_transcribe(clone_token)
                     );
 
                     // // Wait 
