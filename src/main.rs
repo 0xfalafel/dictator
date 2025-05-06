@@ -26,10 +26,23 @@ async fn main() {
 
             match event.state {
                 HotKeyState::Pressed  => {
-                    if let Err(err) = record_wav(token.clone()).await {
-                        eprintln!("Failed to record the audio: {err}");
-                        break;
-                    }                    
+                    let clone_token = token.clone();
+                    let _handle = tokio::spawn(
+                        record_wav(clone_token)
+                    );
+
+                    // // Wait 
+                    // match handle.await {
+                    //     Err(err) => {
+                    //         eprintln!("Task failed to execute: {err}");
+                    //     },
+                    //     Ok(result) => {
+                    //         if let Err(err) = result {
+                    //             eprintln!("Error recording sound: {err}")
+                    //         }
+                    //     }
+                    // }
+
                 },
                 HotKeyState::Released => {
                     token.cancel();

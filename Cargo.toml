@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.98"
-cpal = "0.15.3"
+cpal = { git = "https://github.com/0xfalafel/cpal.git" }
 global-hotkey = "0.6.3"
 hound = "3.5.1"
 tokio = { version="1.41.1", features = ["full"]}
