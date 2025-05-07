@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::BufWriter;
 use std::sync::{Arc, Mutex};
 use tokio_util::sync::CancellationToken;
-
+use std::env::temp_dir;
 
 use anyhow::{anyhow, Context, Result};
 
@@ -26,9 +26,10 @@ pub async fn record_wav(token: CancellationToken) -> Result<()> {
     // println!("Default input config: {:?}", config);
 
     // The WAV file we're recording to.
-    const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/recorded.wav");
+    let temp_dir = temp_dir();
+    let path = format!("{}/recorded.wav", temp_dir.display());
     let spec = wav_spec_from_config(&config);
-    let writer = hound::WavWriter::create(PATH, spec)?;
+    let writer = hound::WavWriter::create(&path, spec)?;
     let writer = Arc::new(Mutex::new(Some(writer)));
     
     // Run the input stream on a separate thread.
@@ -79,7 +80,7 @@ pub async fn record_wav(token: CancellationToken) -> Result<()> {
     token.cancelled().await;
     drop(stream);
     writer.lock().unwrap().take().unwrap().finalize()?;
-    println!("Recording {} complete!", PATH);
+    println!("Recording {} complete!", path);
     
     Ok(())
 }
