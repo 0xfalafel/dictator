@@ -39,22 +39,9 @@ async fn main() {
             match event.state {
                 HotKeyState::Pressed  => {
                     let clone_token = token.clone();
-                    let _handle = tokio::spawn(
+                    tokio::spawn(
                         record_and_transcribe(clone_token)
                     );
-
-                    // // Wait 
-                    // match handle.await {
-                    //     Err(err) => {
-                    //         eprintln!("Task failed to execute: {err}");
-                    //     },
-                    //     Ok(result) => {
-                    //         if let Err(err) = result {
-                    //             eprintln!("Error recording sound: {err}")
-                    //         }
-                    //     }
-                    // }
-
                 },
                 HotKeyState::Released => {
                     token.cancel();
